@@ -161,7 +161,7 @@
     bottom:24px;
     left:50%;
     transform:translateX(-50%) translateY(20px);
-    background:var(--emerald-deep);
+    background:var(--danger);
     color:#fff;
     padding:14px 26px;
     border-radius:999px;
@@ -173,177 +173,85 @@
     box-shadow:0 10px 25px rgba(0,0,0,.2);
   }
   .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-  .footer-link{
-    text-align:center;
-    margin-top:28px;
-  }
-  .footer-link button{
-    background:none;
-    border:none;
-    color:var(--ink-soft);
-    font-family:'Tajawal',sans-serif;
-    font-size:12.5px;
-    cursor:pointer;
-    text-decoration:underline;
-    opacity:.7;
-  }
-  /* Secretary panel */
-  .panel-overlay{
-    position:fixed;
-    inset:0;
-    background:rgba(21,55,50,.55);
+
+  /* Success screen */
+  .success-view{
     display:none;
+    text-align:center;
+    padding:12px 4px 4px;
+  }
+  .success-view.show{display:block;}
+  .check-circle{
+    width:78px;
+    height:78px;
+    border-radius:50%;
+    background:var(--emerald);
+    margin:0 auto 18px;
+    display:flex;
     align-items:center;
     justify-content:center;
-    padding:20px;
-    z-index:50;
+    box-shadow:0 0 0 8px var(--sage);
+    animation:pop .35s ease;
   }
-  .panel-overlay.show{display:flex;}
-  .pin-box{
-    background:#fff;
-    border-radius:16px;
-    padding:28px;
-    width:100%;
-    max-width:320px;
-    text-align:center;
+  @keyframes pop{
+    0%{transform:scale(.6); opacity:0;}
+    100%{transform:scale(1); opacity:1;}
   }
-  .pin-box h3{
+  .check-circle svg{width:38px;height:38px;}
+  .success-title{
     font-family:'Aref Ruqaa',serif;
+    font-size:26px;
     color:var(--emerald-deep);
-    margin:0 0 16px;
-    font-size:22px;
+    margin:0 0 8px;
   }
-  .pin-box input{
-    text-align:center;
-    letter-spacing:6px;
-    font-size:20px;
+  .success-sub{
+    color:var(--ink-soft);
+    font-size:14px;
+    margin-bottom:22px;
   }
-  .pin-actions{display:flex;gap:10px;margin-top:16px;}
-  .pin-actions button{
-    flex:1;
-    padding:11px;
-    border-radius:8px;
-    border:none;
-    font-family:'Tajawal',sans-serif;
-    font-weight:700;
-    cursor:pointer;
-  }
-  .pin-actions .go{background:var(--emerald);color:#fff;}
-  .pin-actions .cancel{background:var(--sage);color:var(--ink);}
-  .admin-screen{
-    position:fixed;
-    inset:0;
-    background:var(--ivory);
-    display:none;
-    z-index:40;
-    overflow-y:auto;
-  }
-  .admin-screen.show{display:block;}
-  .admin-header{
-    background:var(--emerald-deep);
-    color:#fff;
-    padding:20px;
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-  }
-  .admin-header h2{
-    font-family:'Aref Ruqaa',serif;
-    margin:0;
-    font-size:22px;
-  }
-  .admin-header button{
-    background:rgba(255,255,255,.15);
-    border:1px solid rgba(255,255,255,.3);
-    color:#fff;
-    padding:8px 14px;
-    border-radius:8px;
-    cursor:pointer;
-    font-family:'Tajawal',sans-serif;
-    font-size:13px;
-  }
-  .admin-body{padding:20px;max-width:900px;margin:0 auto;}
-  .stats-row{
-    display:flex;
-    gap:12px;
-    margin-bottom:20px;
-    flex-wrap:wrap;
-  }
-  .stat{
-    flex:1;
-    min-width:110px;
-    background:#fff;
-    border:1px solid #EDE6D3;
+  .success-summary{
+    background:var(--sage);
     border-radius:12px;
-    padding:14px;
-    text-align:center;
+    padding:16px 18px;
+    text-align:right;
+    margin-bottom:24px;
   }
-  .stat .num{font-size:24px;font-weight:700;color:var(--emerald-deep);}
-  .stat .lbl{font-size:12px;color:var(--ink-soft);margin-top:2px;}
-  .toolbar{
+  .success-summary .row{
     display:flex;
     justify-content:space-between;
-    align-items:center;
-    margin-bottom:14px;
-    gap:10px;
-    flex-wrap:wrap;
+    font-size:14px;
+    padding:6px 0;
+    border-bottom:1px solid #DCE7E1;
   }
-  .toolbar input{max-width:220px;}
-  .toolbar button.export{
-    background:var(--gold);
-    border:none;
-    color:var(--emerald-deep);
-    padding:11px 16px;
-    border-radius:8px;
-    font-weight:700;
-    cursor:pointer;
-    font-family:'Tajawal',sans-serif;
-    font-size:13px;
-  }
-  table{
-    width:100%;
-    border-collapse:collapse;
-    background:#fff;
+  .success-summary .row:last-child{border-bottom:none;}
+  .success-summary .row span:first-child{color:var(--ink-soft);}
+  .success-summary .row span:last-child{font-weight:700;color:var(--emerald-deep);}
+  .payment-note{
+    background:#FBF3DD;
+    border:1.5px solid var(--gold-soft);
     border-radius:12px;
-    overflow:hidden;
-    border:1px solid #EDE6D3;
-  }
-  th,td{
-    padding:12px 14px;
+    padding:14px 16px;
     text-align:right;
     font-size:13.5px;
-    border-bottom:1px solid #F0ECDF;
+    line-height:1.9;
+    color:var(--ink);
+    margin-bottom:22px;
   }
-  th{
-    background:var(--sage);
-    color:var(--emerald-deep);
+  .payment-note strong{color:var(--emerald-deep);}
+  button.again{
+    width:100%;
+    padding:14px;
+    border:1.5px solid var(--emerald);
+    border-radius:10px;
+    background:#fff;
+    color:var(--emerald);
+    font-family:'Tajawal',sans-serif;
     font-weight:700;
-    font-size:12.5px;
-  }
-  tr:last-child td{border-bottom:none;}
-  .del-btn{
-    background:none;
-    border:none;
-    color:var(--danger);
+    font-size:15px;
     cursor:pointer;
-    font-size:12.5px;
-    text-decoration:underline;
-  }
-  .empty-state{
-    text-align:center;
-    padding:50px 20px;
-    color:var(--ink-soft);
-    font-size:14px;
-  }
-  .loading{
-    text-align:center;
-    padding:40px;
-    color:var(--ink-soft);
-    font-size:14px;
   }
   @media (max-width:520px){
     .wrap{padding:24px 14px 40px;}
-    th,td{font-size:12px;padding:9px 8px;}
   }
 </style>
 </head>
@@ -357,79 +265,68 @@
   <div class="sub">يرجى تعبئة البيانات التالية بدقة</div>
 
   <div class="card">
-    <div class="field">
-      <label>الاسم الكامل</label>
-      <input type="text" id="f_name" placeholder="اسم الطالبة الكامل">
-      <div class="error" id="err_name">الرجاء إدخال الاسم الكامل</div>
-    </div>
-
-    <div class="field">
-      <label>الرقم الشخصي</label>
-      <input type="text" id="f_pid" placeholder="مثال: 000000000" inputmode="numeric">
-      <div class="error" id="err_pid">الرجاء إدخال الرقم الشخصي</div>
-    </div>
-
-    <div class="field">
-      <label>رقم الهاتف</label>
-      <input type="tel" id="f_phone" placeholder="مثال: 3XXXXXXX" inputmode="tel">
-      <div class="error" id="err_phone">الرجاء إدخال رقم هاتف صحيح</div>
-    </div>
-
-    <div class="field">
-      <label>نوع الحلقة</label>
-      <div class="halaqa-options" id="halaqa_group">
-        <div class="halaqa-chip" data-val="حفظ">حفظ</div>
-        <div class="halaqa-chip" data-val="تجويد">تجويد</div>
-        <div class="halaqa-chip" data-val="اقرأ وارتق">اقرأ وارتق</div>
+    <div id="formView">
+      <div class="field">
+        <label>الاسم الكامل</label>
+        <input type="text" id="f_name" placeholder="اسم الطالبة الكامل">
+        <div class="error" id="err_name">الرجاء إدخال الاسم الكامل</div>
       </div>
-      <div class="error" id="err_halaqa" style="margin-top:12px;">الرجاء اختيار نوع الحلقة</div>
+
+      <div class="field">
+        <label>الرقم الشخصي</label>
+        <input type="text" id="f_pid" placeholder="مثال: 000000000" inputmode="numeric">
+        <div class="error" id="err_pid">الرجاء إدخال الرقم الشخصي</div>
+      </div>
+
+      <div class="field">
+        <label>رقم الهاتف</label>
+        <input type="tel" id="f_phone" placeholder="مثال: 3XXXXXXX" inputmode="tel">
+        <div class="error" id="err_phone">الرجاء إدخال رقم هاتف صحيح</div>
+      </div>
+
+      <div class="field">
+        <label>نوع الحلقة</label>
+        <div class="halaqa-options" id="halaqa_group">
+          <div class="halaqa-chip" data-val="حفظ">حفظ</div>
+          <div class="halaqa-chip" data-val="تجويد">تجويد</div>
+          <div class="halaqa-chip" data-val="اقرأ وارتق">اقرأ وارتق</div>
+        </div>
+        <div class="error" id="err_halaqa" style="margin-top:12px;">الرجاء اختيار نوع الحلقة</div>
+      </div>
+
+      <button class="submit" id="submitBtn" onclick="submitForm()">تسجيل الطالبة</button>
     </div>
 
-    <button class="submit" id="submitBtn" onclick="submitForm()">تسجيل الطالبة</button>
-  </div>
-
-  <div class="footer-link">
-    <button onclick="openPinPrompt()">دخول السكرتيرة</button>
+    <div class="success-view" id="successView">
+      <div class="check-circle">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M5 13l4 4L19 7" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+      <div class="success-title">تم تسجيل الطالبة بنجاح</div>
+      <div class="success-sub">تم استلام بياناتكم، وسيتم التواصل معكم عند بدء الحلقة</div>
+      <div class="success-summary">
+        <div class="row"><span>الاسم</span><span id="sum_name"></span></div>
+        <div class="row"><span>نوع الحلقة</span><span id="sum_halaqa"></span></div>
+      </div>
+      <div class="payment-note">
+        يرجى إتمام عملية دفع الرسوم عن طريق البنفت: <strong>33535594</strong>
+        مع ضرورة كتابة اسم الطالبة والحلقة في الوصف، وإرسال صورة التحويل على الرقم:
+        <strong>35045650</strong>
+      </div>
+      <button class="again" onclick="resetForm()">تسجيل طالبة أخرى</button>
+    </div>
   </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
-<!-- PIN overlay -->
-<div class="panel-overlay" id="pinOverlay">
-  <div class="pin-box">
-    <h3>دخول السكرتيرة</h3>
-    <input type="text" id="pinInput" placeholder="الرمز السري" inputmode="numeric" maxlength="6">
-    <div class="pin-actions">
-      <button class="go" onclick="checkPin()">دخول</button>
-      <button class="cancel" onclick="closePinPrompt()">إلغاء</button>
-    </div>
-  </div>
-</div>
-
-<!-- Admin screen -->
-<div class="admin-screen" id="adminScreen">
-  <div class="admin-header">
-    <h2>لوحة السكرتيرة — قائمة الطالبات</h2>
-    <button onclick="closeAdmin()">إغلاق</button>
-  </div>
-  <div class="admin-body">
-    <div class="stats-row" id="statsRow"></div>
-    <div class="toolbar">
-      <input type="text" id="searchBox" placeholder="بحث بالاسم أو الرقم الشخصي..." oninput="renderTable()">
-      <button class="export" onclick="exportCSV()">تصدير CSV</button>
-    </div>
-    <div id="tableWrap"><div class="loading">جارِ التحميل...</div></div>
-  </div>
-</div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp
+  getFirestore, collection, addDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// ⚠️ عدّل هذي البيانات ببيانات مشروعك في Firebase (Project settings > Your apps > SDK setup)
 const firebaseConfig = {
   apiKey: "AIzaSyB7Zid7vCNl5-CfNefazeEuR475Z2Ej1ms",
   authDomain: "tasjeel-shaikhan.firebaseapp.com",
@@ -443,9 +340,7 @@ const fbApp = initializeApp(firebaseConfig);
 const db = getFirestore(fbApp);
 const studentsCol = collection(db, "students");
 
-const PIN = "1234"; // يمكن تغييره لاحقاً
 let selectedHalaqa = null;
-let allStudents = [];
 
 document.querySelectorAll('.halaqa-chip').forEach(chip=>{
   chip.addEventListener('click', ()=>{
@@ -472,7 +367,6 @@ async function submitForm(){
   const pid = document.getElementById('f_pid').value.trim();
   const phone = document.getElementById('f_phone').value.trim();
 
-  let ok = true;
   document.getElementById('err_name').style.display = name ? 'none':'block';
   document.getElementById('err_pid').style.display = pid ? 'none':'block';
   document.getElementById('err_phone').style.display = validPhone(phone) ? 'none':'block';
@@ -487,14 +381,14 @@ async function submitForm(){
     await addDoc(studentsCol, {
       name, pid, phone,
       halaqa: selectedHalaqa,
+      paid: false,
       createdAt: new Date().toISOString()
     });
-    showToast('تم تسجيل الطالبة بنجاح ✓');
-    document.getElementById('f_name').value='';
-    document.getElementById('f_pid').value='';
-    document.getElementById('f_phone').value='';
-    document.querySelectorAll('.halaqa-chip').forEach(c=>c.classList.remove('active'));
-    selectedHalaqa = null;
+
+    document.getElementById('sum_name').textContent = name;
+    document.getElementById('sum_halaqa').textContent = selectedHalaqa;
+    document.getElementById('formView').style.display = 'none';
+    document.getElementById('successView').classList.add('show');
   }catch(e){
     console.error(e);
     showToast('حدث خطأ، حاولي مرة أخرى');
@@ -504,137 +398,18 @@ async function submitForm(){
   }
 }
 
-function openPinPrompt(){
-  document.getElementById('pinOverlay').classList.add('show');
-  document.getElementById('pinInput').value='';
-  setTimeout(()=>document.getElementById('pinInput').focus(), 50);
-}
-function closePinPrompt(){
-  document.getElementById('pinOverlay').classList.remove('show');
-}
-function checkPin(){
-  const v = document.getElementById('pinInput').value.trim();
-  if(v === PIN){
-    closePinPrompt();
-    openAdmin();
-  }else{
-    showToast('الرمز غير صحيح');
-  }
-}
-document.getElementById('pinInput').addEventListener('keydown', e=>{
-  if(e.key==='Enter') checkPin();
-});
-
-async function openAdmin(){
-  document.getElementById('adminScreen').classList.add('show');
-  await loadStudents();
-}
-function closeAdmin(){
-  document.getElementById('adminScreen').classList.remove('show');
+function resetForm(){
+  document.getElementById('f_name').value='';
+  document.getElementById('f_pid').value='';
+  document.getElementById('f_phone').value='';
+  document.querySelectorAll('.halaqa-chip').forEach(c=>c.classList.remove('active'));
+  selectedHalaqa = null;
+  document.getElementById('successView').classList.remove('show');
+  document.getElementById('formView').style.display = 'block';
 }
 
-async function loadStudents(){
-  document.getElementById('tableWrap').innerHTML = '<div class="loading">جارِ التحميل...</div>';
-  try{
-    const snap = await getDocs(studentsCol);
-    const records = [];
-    snap.forEach(d=>{
-      records.push({ id: d.id, ...d.data() });
-    });
-    records.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
-    allStudents = records;
-    renderStats();
-    renderTable();
-  }catch(e){
-    console.error(e);
-    document.getElementById('tableWrap').innerHTML = '<div class="empty-state">تعذر تحميل البيانات</div>';
-  }
-}
-
-function renderStats(){
-  const total = allStudents.length;
-  const counts = {'حفظ':0,'تجويد':0,'اقرأ وارتق':0};
-  allStudents.forEach(s=>{ if(counts[s.halaqa]!==undefined) counts[s.halaqa]++; });
-  document.getElementById('statsRow').innerHTML = `
-    <div class="stat"><div class="num">${total}</div><div class="lbl">إجمالي الطالبات</div></div>
-    <div class="stat"><div class="num">${counts['حفظ']}</div><div class="lbl">حفظ</div></div>
-    <div class="stat"><div class="num">${counts['تجويد']}</div><div class="lbl">تجويد</div></div>
-    <div class="stat"><div class="num">${counts['اقرأ وارتق']}</div><div class="lbl">اقرأ وارتق</div></div>
-  `;
-}
-
-function renderTable(){
-  const q = document.getElementById('searchBox').value.trim();
-  const filtered = allStudents.filter(s=> !q || s.name.includes(q) || s.pid.includes(q));
-  const wrap = document.getElementById('tableWrap');
-  if(filtered.length === 0){
-    wrap.innerHTML = '<div class="empty-state">لا توجد بيانات مسجّلة بعد</div>';
-    return;
-  }
-  let rows = filtered.map(s=>{
-    const d = new Date(s.createdAt);
-    const dateStr = d.toLocaleDateString('ar-BH', {year:'numeric', month:'2-digit', day:'2-digit'});
-    return `<tr>
-      <td>${escapeHtml(s.name)}</td>
-      <td>${escapeHtml(s.pid)}</td>
-      <td>${escapeHtml(s.phone)}</td>
-      <td>${escapeHtml(s.halaqa)}</td>
-      <td>${dateStr}</td>
-      <td><button class="del-btn" onclick="deleteStudent('${s.id}')">حذف</button></td>
-    </tr>`;
-  }).join('');
-  wrap.innerHTML = `<table>
-    <thead><tr>
-      <th>الاسم</th><th>الرقم الشخصي</th><th>الهاتف</th><th>الحلقة</th><th>تاريخ التسجيل</th><th></th>
-    </tr></thead>
-    <tbody>${rows}</tbody>
-  </table>`;
-}
-
-function escapeHtml(str){
-  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
-}
-
-async function deleteStudent(id){
-  if(!confirm('هل تريدين حذف هذا السجل؟')) return;
-  try{
-    await deleteDoc(doc(db, "students", id));
-    allStudents = allStudents.filter(s=>s.id !== id);
-    renderStats();
-    renderTable();
-    showToast('تم الحذف');
-  }catch(e){
-    console.error(e);
-    showToast('تعذر الحذف');
-  }
-}
-
-function exportCSV(){
-  if(allStudents.length===0){ showToast('لا توجد بيانات للتصدير'); return; }
-  const headers = ['الاسم','الرقم الشخصي','الهاتف','الحلقة','تاريخ التسجيل'];
-  const rows = allStudents.map(s=>[s.name, s.pid, s.phone, s.halaqa, s.createdAt]);
-  let csv = '\uFEFF' + headers.join(',') + '\n';
-  rows.forEach(r=>{
-    csv += r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',') + '\n';
-  });
-  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'طالبات_' + new Date().toISOString().slice(0,10) + '.csv';
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
-// الأزرار بالـ HTML تستخدم onclick="..." وهذا يحتاج الدوال بالنطاق العام (window)
-// لأن الكود صار داخل type="module" الذي له نطاقه الخاص افتراضياً
 window.submitForm = submitForm;
-window.openPinPrompt = openPinPrompt;
-window.closePinPrompt = closePinPrompt;
-window.checkPin = checkPin;
-window.closeAdmin = closeAdmin;
-window.deleteStudent = deleteStudent;
-window.exportCSV = exportCSV;
+window.resetForm = resetForm;
 </script>
 
 </body>
