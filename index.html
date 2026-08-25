@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>تسجيل الطالبات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#26312D;
+    --ink-soft:#5B685F;
+    --emerald:#1F4B43;
+    --emerald-deep:#153732;
+    --gold:#C9A227;
+    --gold-soft:#E7D6A0;
+    --ivory:#FBF7EE;
+    --sage:#EAF0EC;
+    --card:#FFFFFF;
+    --danger:#B3413A;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:var(--ivory);
+    color:var(--ink);
+    font-family:'Tajawal',sans-serif;
+    min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+  }
+  .ring-pattern{
+    height:10px;
+    width:100%;
+    background-image:radial-gradient(circle, var(--gold) 2.5px, transparent 2.6px);
+    background-size:22px 22px;
+    background-position:center;
+    opacity:.55;
+  }
+  .wrap{
+    max-width:520px;
+    margin:0 auto;
+    padding:36px 20px 60px;
+  }
+  .eyebrow{
+    text-align:center;
+    color:var(--emerald);
+    font-size:13px;
+    letter-spacing:.5px;
+    opacity:.85;
+    margin-bottom:6px;
+  }
+  h1{
+    font-family:'Aref Ruqaa',serif;
+    text-align:center;
+    font-size:34px;
+    color:var(--emerald-deep);
+    margin:0 0 4px;
+  }
+  .sub{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:14px;
+    margin-bottom:28px;
+  }
+  .card{
+    background:var(--card);
+    border-radius:16px;
+    padding:28px 24px;
+    box-shadow:0 10px 30px rgba(31,75,67,.08);
+    border:1px solid #EDE6D3;
+  }
+  label{
+    display:block;
+    font-size:14px;
+    font-weight:700;
+    color:var(--emerald-deep);
+    margin-bottom:8px;
+  }
+  .field{margin-bottom:20px;}
+  input[type=text], input[type=tel]{
+    width:100%;
+    padding:13px 14px;
+    border-radius:10px;
+    border:1.5px solid #DEE6E1;
+    background:var(--sage);
+    font-family:'Tajawal',sans-serif;
+    font-size:15px;
+    color:var(--ink);
+    outline:none;
+    transition:border-color .15s, background .15s;
+  }
+  input:focus{
+    border-color:var(--emerald);
+    background:#fff;
+  }
+  .halaqa-options{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .halaqa-chip{
+    flex:1;
+    min-width:100px;
+    border:2px solid #DEE6E1;
+    background:var(--sage);
+    border-radius:999px;
+    padding:14px 10px;
+    text-align:center;
+    cursor:pointer;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--ink-soft);
+    transition:all .15s;
+    position:relative;
+  }
+  .halaqa-chip::before{
+    content:"";
+    display:block;
+    width:20px;
+    height:20px;
+    border-radius:50%;
+    border:3px solid var(--gold-soft);
+    margin:0 auto 8px;
+    transition:all .15s;
+  }
+  .halaqa-chip.active{
+    border-color:var(--emerald);
+    background:var(--emerald);
+    color:#fff;
+  }
+  .halaqa-chip.active::before{
+    border-color:var(--gold);
+    background:var(--gold);
+  }
+  button.submit{
+    width:100%;
+    padding:15px;
+    border:none;
+    border-radius:10px;
+    background:var(--emerald);
+    color:#fff;
+    font-family:'Tajawal',sans-serif;
+    font-weight:700;
+    font-size:16px;
+    cursor:pointer;
+    margin-top:8px;
+    transition:background .15s, transform .1s;
+  }
+  button.submit:hover{background:var(--emerald-deep);}
+  button.submit:active{transform:scale(.99);}
+  button.submit:disabled{opacity:.6;cursor:not-allowed;}
+  .error{
+    color:var(--danger);
+    font-size:13px;
+    margin-top:-12px;
+    margin-bottom:16px;
+    display:none;
+  }
+  .toast{
+    position:fixed;
+    bottom:24px;
+    left:50%;
+    transform:translateX(-50%) translateY(20px);
+    background:var(--emerald-deep);
+    color:#fff;
+    padding:14px 26px;
+    border-radius:999px;
+    font-size:14px;
+    font-weight:700;
+    opacity:0;
+    transition:all .3s;
+    pointer-events:none;
+    box-shadow:0 10px 25px rgba(0,0,0,.2);
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+  .footer-link{
+    text-align:center;
+    margin-top:28px;
+  }
+  .footer-link button{
+    background:none;
+    border:none;
+    color:var(--ink-soft);
+    font-family:'Tajawal',sans-serif;
+    font-size:12.5px;
+    cursor:pointer;
+    text-decoration:underline;
+    opacity:.7;
+  }
+  /* Secretary panel */
+  .panel-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(21,55,50,.55);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:50;
+  }
+  .panel-overlay.show{display:flex;}
+  .pin-box{
+    background:#fff;
+    border-radius:16px;
+    padding:28px;
+    width:100%;
+    max-width:320px;
+    text-align:center;
+  }
+  .pin-box h3{
+    font-family:'Aref Ruqaa',serif;
+    color:var(--emerald-deep);
+    margin:0 0 16px;
+    font-size:22px;
+  }
+  .pin-box input{
+    text-align:center;
+    letter-spacing:6px;
+    font-size:20px;
+  }
+  .pin-actions{display:flex;gap:10px;margin-top:16px;}
+  .pin-actions button{
+    flex:1;
+    padding:11px;
+    border-radius:8px;
+    border:none;
+    font-family:'Tajawal',sans-serif;
+    font-weight:700;
+    cursor:pointer;
+  }
+  .pin-actions .go{background:var(--emerald);color:#fff;}
+  .pin-actions .cancel{background:var(--sage);color:var(--ink);}
+  .admin-screen{
+    position:fixed;
+    inset:0;
+    background:var(--ivory);
+    display:none;
+    z-index:40;
+    overflow-y:auto;
+  }
+  .admin-screen.show{display:block;}
+  .admin-header{
+    background:var(--emerald-deep);
+    color:#fff;
+    padding:20px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+  }
+  .admin-header h2{
+    font-family:'Aref Ruqaa',serif;
+    margin:0;
+    font-size:22px;
+  }
+  .admin-header button{
+    background:rgba(255,255,255,.15);
+    border:1px solid rgba(255,255,255,.3);
+    color:#fff;
+    padding:8px 14px;
+    border-radius:8px;
+    cursor:pointer;
+    font-family:'Tajawal',sans-serif;
+    font-size:13px;
+  }
+  .admin-body{padding:20px;max-width:900px;margin:0 auto;}
+  .stats-row{
+    display:flex;
+    gap:12px;
+    margin-bottom:20px;
+    flex-wrap:wrap;
+  }
+  .stat{
+    flex:1;
+    min-width:110px;
+    background:#fff;
+    border:1px solid #EDE6D3;
+    border-radius:12px;
+    padding:14px;
+    text-align:center;
+  }
+  .stat .num{font-size:24px;font-weight:700;color:var(--emerald-deep);}
+  .stat .lbl{font-size:12px;color:var(--ink-soft);margin-top:2px;}
+  .toolbar{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:14px;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .toolbar input{max-width:220px;}
+  .toolbar button.export{
+    background:var(--gold);
+    border:none;
+    color:var(--emerald-deep);
+    padding:11px 16px;
+    border-radius:8px;
+    font-weight:700;
+    cursor:pointer;
+    font-family:'Tajawal',sans-serif;
+    font-size:13px;
+  }
+  table{
+    width:100%;
+    border-collapse:collapse;
+    background:#fff;
+    border-radius:12px;
+    overflow:hidden;
+    border:1px solid #EDE6D3;
+  }
+  th,td{
+    padding:12px 14px;
+    text-align:right;
+    font-size:13.5px;
+    border-bottom:1px solid #F0ECDF;
+  }
+  th{
+    background:var(--sage);
+    color:var(--emerald-deep);
+    font-weight:700;
+    font-size:12.5px;
+  }
+  tr:last-child td{border-bottom:none;}
+  .del-btn{
+    background:none;
+    border:none;
+    color:var(--danger);
+    cursor:pointer;
+    font-size:12.5px;
+    text-decoration:underline;
+  }
+  .empty-state{
+    text-align:center;
+    padding:50px 20px;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+  .loading{
+    text-align:center;
+    padding:40px;
+    color:var(--ink-soft);
+    font-size:14px;
+  }
+  @media (max-width:520px){
+    .wrap{padding:24px 14px 40px;}
+    th,td{font-size:12px;padding:9px 8px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="ring-pattern"></div>
+
+<div class="wrap">
+  <div class="eyebrow">مركز شيخان وشريفة الفارسي</div>
+  <h1>تسجيل الطالبات</h1>
+  <div class="sub">يرجى تعبئة البيانات التالية بدقة</div>
+
+  <div class="card">
+    <div class="field">
+      <label>الاسم الكامل</label>
+      <input type="text" id="f_name" placeholder="اسم الطالبة الكامل">
+      <div class="error" id="err_name">الرجاء إدخال الاسم الكامل</div>
+    </div>
+
+    <div class="field">
+      <label>الرقم الشخصي</label>
+      <input type="text" id="f_pid" placeholder="مثال: 000000000" inputmode="numeric">
+      <div class="error" id="err_pid">الرجاء إدخال الرقم الشخصي</div>
+    </div>
+
+    <div class="field">
+      <label>رقم الهاتف</label>
+      <input type="tel" id="f_phone" placeholder="مثال: 3XXXXXXX" inputmode="tel">
+      <div class="error" id="err_phone">الرجاء إدخال رقم هاتف صحيح</div>
+    </div>
+
+    <div class="field">
+      <label>نوع الحلقة</label>
+      <div class="halaqa-options" id="halaqa_group">
+        <div class="halaqa-chip" data-val="حفظ">حفظ</div>
+        <div class="halaqa-chip" data-val="تجويد">تجويد</div>
+        <div class="halaqa-chip" data-val="اقرأ وارتق">اقرأ وارتق</div>
+      </div>
+      <div class="error" id="err_halaqa" style="margin-top:12px;">الرجاء اختيار نوع الحلقة</div>
+    </div>
+
+    <button class="submit" id="submitBtn" onclick="submitForm()">تسجيل الطالبة</button>
+  </div>
+
+  <div class="footer-link">
+    <button onclick="openPinPrompt()">دخول السكرتيرة</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- PIN overlay -->
+<div class="panel-overlay" id="pinOverlay">
+  <div class="pin-box">
+    <h3>دخول السكرتيرة</h3>
+    <input type="text" id="pinInput" placeholder="الرمز السري" inputmode="numeric" maxlength="6">
+    <div class="pin-actions">
+      <button class="go" onclick="checkPin()">دخول</button>
+      <button class="cancel" onclick="closePinPrompt()">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin screen -->
+<div class="admin-screen" id="adminScreen">
+  <div class="admin-header">
+    <h2>لوحة السكرتيرة — قائمة الطالبات</h2>
+    <button onclick="closeAdmin()">إغلاق</button>
+  </div>
+  <div class="admin-body">
+    <div class="stats-row" id="statsRow"></div>
+    <div class="toolbar">
+      <input type="text" id="searchBox" placeholder="بحث بالاسم أو الرقم الشخصي..." oninput="renderTable()">
+      <button class="export" onclick="exportCSV()">تصدير CSV</button>
+    </div>
+    <div id="tableWrap"><div class="loading">جارِ التحميل...</div></div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {
+  getFirestore, collection, addDoc, getDocs, deleteDoc, doc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ⚠️ عدّل هذي البيانات ببيانات مشروعك في Firebase (Project settings > Your apps > SDK setup)
+const firebaseConfig = {
+  apiKey: "AIzaSyB7Zid7vCNl5-CfNefazeEuR475Z2Ej1ms",
+  authDomain: "tasjeel-shaikhan.firebaseapp.com",
+  projectId: "tasjeel-shaikhan",
+  storageBucket: "tasjeel-shaikhan.firebasestorage.app",
+  messagingSenderId: "1032243152405",
+  appId: "1:1032243152405:web:319bb00aa0eb9e8ac9301c"
+};
+
+const fbApp = initializeApp(firebaseConfig);
+const db = getFirestore(fbApp);
+const studentsCol = collection(db, "students");
+
+const PIN = "1234"; // يمكن تغييره لاحقاً
+let selectedHalaqa = null;
+let allStudents = [];
+
+document.querySelectorAll('.halaqa-chip').forEach(chip=>{
+  chip.addEventListener('click', ()=>{
+    document.querySelectorAll('.halaqa-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    selectedHalaqa = chip.dataset.val;
+    document.getElementById('err_halaqa').style.display='none';
+  });
+});
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'), 2600);
+}
+
+function validPhone(v){
+  return /^[0-9+\s]{7,15}$/.test(v.trim());
+}
+
+async function submitForm(){
+  const name = document.getElementById('f_name').value.trim();
+  const pid = document.getElementById('f_pid').value.trim();
+  const phone = document.getElementById('f_phone').value.trim();
+
+  let ok = true;
+  document.getElementById('err_name').style.display = name ? 'none':'block';
+  document.getElementById('err_pid').style.display = pid ? 'none':'block';
+  document.getElementById('err_phone').style.display = validPhone(phone) ? 'none':'block';
+  document.getElementById('err_halaqa').style.display = selectedHalaqa ? 'none':'block';
+  if(!name || !pid || !validPhone(phone) || !selectedHalaqa){ return; }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'جارِ التسجيل...';
+
+  try{
+    await addDoc(studentsCol, {
+      name, pid, phone,
+      halaqa: selectedHalaqa,
+      createdAt: new Date().toISOString()
+    });
+    showToast('تم تسجيل الطالبة بنجاح ✓');
+    document.getElementById('f_name').value='';
+    document.getElementById('f_pid').value='';
+    document.getElementById('f_phone').value='';
+    document.querySelectorAll('.halaqa-chip').forEach(c=>c.classList.remove('active'));
+    selectedHalaqa = null;
+  }catch(e){
+    console.error(e);
+    showToast('حدث خطأ، حاولي مرة أخرى');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'تسجيل الطالبة';
+  }
+}
+
+function openPinPrompt(){
+  document.getElementById('pinOverlay').classList.add('show');
+  document.getElementById('pinInput').value='';
+  setTimeout(()=>document.getElementById('pinInput').focus(), 50);
+}
+function closePinPrompt(){
+  document.getElementById('pinOverlay').classList.remove('show');
+}
+function checkPin(){
+  const v = document.getElementById('pinInput').value.trim();
+  if(v === PIN){
+    closePinPrompt();
+    openAdmin();
+  }else{
+    showToast('الرمز غير صحيح');
+  }
+}
+document.getElementById('pinInput').addEventListener('keydown', e=>{
+  if(e.key==='Enter') checkPin();
+});
+
+async function openAdmin(){
+  document.getElementById('adminScreen').classList.add('show');
+  await loadStudents();
+}
+function closeAdmin(){
+  document.getElementById('adminScreen').classList.remove('show');
+}
+
+async function loadStudents(){
+  document.getElementById('tableWrap').innerHTML = '<div class="loading">جارِ التحميل...</div>';
+  try{
+    const snap = await getDocs(studentsCol);
+    const records = [];
+    snap.forEach(d=>{
+      records.push({ id: d.id, ...d.data() });
+    });
+    records.sort((a,b)=> new Date(b.createdAt) - new Date(a.createdAt));
+    allStudents = records;
+    renderStats();
+    renderTable();
+  }catch(e){
+    console.error(e);
+    document.getElementById('tableWrap').innerHTML = '<div class="empty-state">تعذر تحميل البيانات</div>';
+  }
+}
+
+function renderStats(){
+  const total = allStudents.length;
+  const counts = {'حفظ':0,'تجويد':0,'اقرأ وارتق':0};
+  allStudents.forEach(s=>{ if(counts[s.halaqa]!==undefined) counts[s.halaqa]++; });
+  document.getElementById('statsRow').innerHTML = `
+    <div class="stat"><div class="num">${total}</div><div class="lbl">إجمالي الطالبات</div></div>
+    <div class="stat"><div class="num">${counts['حفظ']}</div><div class="lbl">حفظ</div></div>
+    <div class="stat"><div class="num">${counts['تجويد']}</div><div class="lbl">تجويد</div></div>
+    <div class="stat"><div class="num">${counts['اقرأ وارتق']}</div><div class="lbl">اقرأ وارتق</div></div>
+  `;
+}
+
+function renderTable(){
+  const q = document.getElementById('searchBox').value.trim();
+  const filtered = allStudents.filter(s=> !q || s.name.includes(q) || s.pid.includes(q));
+  const wrap = document.getElementById('tableWrap');
+  if(filtered.length === 0){
+    wrap.innerHTML = '<div class="empty-state">لا توجد بيانات مسجّلة بعد</div>';
+    return;
+  }
+  let rows = filtered.map(s=>{
+    const d = new Date(s.createdAt);
+    const dateStr = d.toLocaleDateString('ar-BH', {year:'numeric', month:'2-digit', day:'2-digit'});
+    return `<tr>
+      <td>${escapeHtml(s.name)}</td>
+      <td>${escapeHtml(s.pid)}</td>
+      <td>${escapeHtml(s.phone)}</td>
+      <td>${escapeHtml(s.halaqa)}</td>
+      <td>${dateStr}</td>
+      <td><button class="del-btn" onclick="deleteStudent('${s.id}')">حذف</button></td>
+    </tr>`;
+  }).join('');
+  wrap.innerHTML = `<table>
+    <thead><tr>
+      <th>الاسم</th><th>الرقم الشخصي</th><th>الهاتف</th><th>الحلقة</th><th>تاريخ التسجيل</th><th></th>
+    </tr></thead>
+    <tbody>${rows}</tbody>
+  </table>`;
+}
+
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
+}
+
+async function deleteStudent(id){
+  if(!confirm('هل تريدين حذف هذا السجل؟')) return;
+  try{
+    await deleteDoc(doc(db, "students", id));
+    allStudents = allStudents.filter(s=>s.id !== id);
+    renderStats();
+    renderTable();
+    showToast('تم الحذف');
+  }catch(e){
+    console.error(e);
+    showToast('تعذر الحذف');
+  }
+}
+
+function exportCSV(){
+  if(allStudents.length===0){ showToast('لا توجد بيانات للتصدير'); return; }
+  const headers = ['الاسم','الرقم الشخصي','الهاتف','الحلقة','تاريخ التسجيل'];
+  const rows = allStudents.map(s=>[s.name, s.pid, s.phone, s.halaqa, s.createdAt]);
+  let csv = '\uFEFF' + headers.join(',') + '\n';
+  rows.forEach(r=>{
+    csv += r.map(v => '"' + String(v).replace(/"/g,'""') + '"').join(',') + '\n';
+  });
+  const blob = new Blob([csv], {type:'text/csv;charset=utf-8;'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'طالبات_' + new Date().toISOString().slice(0,10) + '.csv';
+  a.click();
+  URL.revokeObjectURL(url);
+}
+</script>
+
+</body>
+</html>
