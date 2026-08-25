@@ -625,6 +625,16 @@ function exportCSV(){
   a.click();
   URL.revokeObjectURL(url);
 }
+
+// الأزرار بالـ HTML تستخدم onclick="..." وهذا يحتاج الدوال بالنطاق العام (window)
+// لأن الكود صار داخل type="module" الذي له نطاقه الخاص افتراضياً
+window.submitForm = submitForm;
+window.openPinPrompt = openPinPrompt;
+window.closePinPrompt = closePinPrompt;
+window.checkPin = checkPin;
+window.closeAdmin = closeAdmin;
+window.deleteStudent = deleteStudent;
+window.exportCSV = exportCSV;
 </script>
 
 </body>
