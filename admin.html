@@ -194,6 +194,62 @@
   th{background:var(--sage); color:var(--emerald-deep); font-weight:700; font-size:12.5px;}
   tr:last-child td{border-bottom:none;}
   .del-btn{background:none;border:none;color:var(--danger);cursor:pointer;font-size:12.5px;text-decoration:underline;}
+  .receipt-btn{
+    background:var(--sage);
+    border:none;
+    color:var(--emerald-deep);
+    padding:6px 10px;
+    border-radius:8px;
+    font-family:'Tajawal',sans-serif;
+    font-weight:700;
+    font-size:12.5px;
+    cursor:pointer;
+  }
+  .no-receipt{color:var(--ink-soft);}
+  .receipt-modal{
+    position:fixed;
+    inset:0;
+    background:rgba(21,55,50,.7);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:60;
+  }
+  .receipt-modal.show{display:flex;}
+  .receipt-modal-box{
+    background:#fff;
+    border-radius:14px;
+    padding:16px;
+    max-width:520px;
+    width:100%;
+    max-height:92vh;
+    overflow-y:auto;
+    text-align:center;
+  }
+  .receipt-modal-box .rm-name{
+    font-weight:700;
+    color:var(--emerald-deep);
+    margin-bottom:12px;
+  }
+  .receipt-modal-box img{
+    max-width:100%;
+    border-radius:10px;
+    border:1px solid #DEE6E1;
+  }
+  .receipt-modal-box button{
+    margin-top:14px;
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:var(--emerald);
+    color:#fff;
+    font-family:'Tajawal',sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+  }
   .name-toggle{
     cursor:pointer;
     display:inline-flex;
@@ -290,6 +346,14 @@
         <button class="save-pin-btn" onclick="savePin()">حفظ الرمز الجديد</button>
       </div>
     </div>
+  </div>
+</div>
+
+<div class="receipt-modal" id="receiptModal" onclick="if(event.target===this) closeReceipt()">
+  <div class="receipt-modal-box">
+    <div class="rm-name" id="receiptModalName"></div>
+    <img id="receiptModalImg" alt="صورة التحويل">
+    <button onclick="closeReceipt()">إغلاق</button>
   </div>
 </div>
 
@@ -437,14 +501,27 @@ function renderTable(){
       <td>${escapeHtml(s.pid)}</td>
       <td>${escapeHtml(s.phone)}</td>
       <td>${escapeHtml(s.halaqa)}</td>
+      <td>${s.receipt ? `<button class="receipt-btn" onclick="viewReceipt('${s.id}')">عرض الصورة</button>` : '<span class="no-receipt">—</span>'}</td>
       <td>${dateStr}</td>
       <td><button class="del-btn" onclick="deleteStudent('${s.id}')">حذف</button></td>
     </tr>`;
   }).join('');
   wrap.innerHTML = `<table>
-    <thead><tr><th>الاسم (اضغطي لتأكيد الدفع)</th><th>الرقم الشخصي</th><th>الهاتف</th><th>الحلقة</th><th>تاريخ التسجيل</th><th></th></tr></thead>
+    <thead><tr><th>الاسم (اضغطي لتأكيد الدفع)</th><th>الرقم الشخصي</th><th>الهاتف</th><th>الحلقة</th><th>صورة التحويل</th><th>تاريخ التسجيل</th><th></th></tr></thead>
     <tbody>${rows}</tbody>
   </table>`;
+}
+
+function viewReceipt(id){
+  const rec = allStudents.find(s=>s.id===id);
+  if(!rec || !rec.receipt) return;
+  document.getElementById('receiptModalImg').src = rec.receipt;
+  document.getElementById('receiptModalName').textContent = rec.name;
+  document.getElementById('receiptModal').classList.add('show');
+}
+function closeReceipt(){
+  document.getElementById('receiptModal').classList.remove('show');
+  document.getElementById('receiptModalImg').src = '';
 }
 
 async function togglePaid(id, currentlyPaid){
@@ -501,6 +578,8 @@ window.switchTab = switchTab;
 window.savePin = savePin;
 window.deleteStudent = deleteStudent;
 window.togglePaid = togglePaid;
+window.viewReceipt = viewReceipt;
+window.closeReceipt = closeReceipt;
 window.exportCSV = exportCSV;
 </script>
 
