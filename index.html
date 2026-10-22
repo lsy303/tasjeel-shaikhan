@@ -238,6 +238,63 @@
     margin-bottom:22px;
   }
   .payment-note strong{color:var(--emerald-deep);}
+  .receipt-box{
+    border:1.5px dashed var(--emerald);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:22px;
+    background:#fff;
+    text-align:right;
+  }
+  .receipt-title{
+    font-weight:700;
+    color:var(--emerald-deep);
+    font-size:14.5px;
+    margin-bottom:4px;
+  }
+  .receipt-hint{
+    color:var(--ink-soft);
+    font-size:12.5px;
+    margin-bottom:12px;
+  }
+  button.pick-btn{
+    width:100%;
+    padding:13px;
+    border:none;
+    border-radius:10px;
+    background:var(--sage);
+    color:var(--emerald-deep);
+    font-family:'Tajawal',sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    cursor:pointer;
+  }
+  .receipt-preview{
+    display:none;
+    max-width:100%;
+    max-height:260px;
+    margin:14px auto 0;
+    border-radius:10px;
+    border:1px solid #DEE6E1;
+  }
+  .receipt-box button.submit{margin-top:14px; display:none;}
+  .receipt-err{
+    color:var(--danger);
+    font-size:13px;
+    margin-top:10px;
+    display:none;
+  }
+  .receipt-done{
+    display:none;
+    background:var(--sage);
+    color:var(--emerald-deep);
+    font-weight:700;
+    font-size:14.5px;
+    padding:14px;
+    border-radius:12px;
+    margin-bottom:22px;
+    text-align:center;
+  }
   button.again{
     width:100%;
     padding:14px;
@@ -314,6 +371,18 @@
         مع ضرورة كتابة اسم الطالبة والحلقة في الوصف، وإرسال صورة التحويل على الرقم:
         <strong>35045650</strong>
       </div>
+
+      <div class="receipt-box" id="receiptBox">
+        <div class="receipt-title">إرفاق صورة التحويل</div>
+        <div class="receipt-hint">بعد إتمام الدفع، ارفعي صورة التحويل هنا مباشرة</div>
+        <input type="file" id="receiptFile" accept="image/*" style="display:none">
+        <button class="pick-btn" id="pickBtn" onclick="document.getElementById('receiptFile').click()">اختيار صورة التحويل</button>
+        <img class="receipt-preview" id="receiptPreview" alt="معاينة صورة التحويل">
+        <button class="submit" id="uploadBtn" onclick="uploadReceipt()">إرسال صورة التحويل</button>
+        <div class="receipt-err" id="receiptErr"></div>
+      </div>
+      <div class="receipt-done" id="receiptDone">✓ تم استلام صورة التحويل، شكراً لكم</div>
+
       <button class="again" onclick="resetForm()">تسجيل طالبة أخرى</button>
     </div>
   </div>
@@ -324,7 +393,7 @@
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
 import {
-  getFirestore, collection, addDoc
+  getFirestore, collection, addDoc, doc, updateDoc
 } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -341,6 +410,8 @@ const db = getFirestore(fbApp);
 const studentsCol = collection(db, "students");
 
 let selectedHalaqa = null;
+let currentDocId = null;
+let receiptData = null;
 
 document.querySelectorAll('.halaqa-chip').forEach(chip=>{
   chip.addEventListener('click', ()=>{
@@ -378,12 +449,14 @@ async function submitForm(){
   btn.textContent = 'جارِ التسجيل...';
 
   try{
-    await addDoc(studentsCol, {
+    const ref = await addDoc(studentsCol, {
       name, pid, phone,
       halaqa: selectedHalaqa,
       paid: false,
       createdAt: new Date().toISOString()
     });
+    currentDocId = ref.id;
+    receiptData = null;
 
     document.getElementById('sum_name').textContent = name;
     document.getElementById('sum_halaqa').textContent = selectedHalaqa;
@@ -398,18 +471,112 @@ async function submitForm(){
   }
 }
 
+// ضغط الصورة قبل الحفظ (أقصى عرض 1000px، جودة JPEG 0.7) لتبقى صغيرة وتنحفظ مباشرة بقاعدة البيانات
+function compressImage(file){
+  return new Promise((resolve, reject)=>{
+    const reader = new FileReader();
+    reader.onerror = ()=>reject(new Error('read'));
+    reader.onload = ()=>{
+      const img = new Image();
+      img.onerror = ()=>reject(new Error('img'));
+      img.onload = ()=>{
+        const MAX = 1000;
+        let w = img.width, h = img.height;
+        if(w > MAX || h > MAX){
+          const r = Math.min(MAX / w, MAX / h);
+          w = Math.round(w * r);
+          h = Math.round(h * r);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff';
+        ctx.fillRect(0, 0, w, h);
+        ctx.drawImage(img, 0, 0, w, h);
+        resolve(canvas.toDataURL('image/jpeg', 0.7));
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+document.getElementById('receiptFile').addEventListener('change', async (e)=>{
+  const file = e.target.files[0];
+  const err = document.getElementById('receiptErr');
+  err.style.display = 'none';
+  if(!file){ return; }
+  if(!file.type.startsWith('image/')){
+    err.textContent = 'الرجاء اختيار صورة فقط';
+    err.style.display = 'block';
+    return;
+  }
+  try{
+    receiptData = await compressImage(file);
+    const prev = document.getElementById('receiptPreview');
+    prev.src = receiptData;
+    prev.style.display = 'block';
+    document.getElementById('uploadBtn').style.display = 'block';
+    document.getElementById('pickBtn').textContent = 'تغيير الصورة';
+  }catch(ex){
+    console.error(ex);
+    receiptData = null;
+    err.textContent = 'تعذر قراءة الصورة، جرّبي صورة ثانية';
+    err.style.display = 'block';
+  }
+});
+
+async function uploadReceipt(){
+  const err = document.getElementById('receiptErr');
+  err.style.display = 'none';
+  if(!currentDocId || !receiptData){
+    err.textContent = 'الرجاء اختيار صورة التحويل أولاً';
+    err.style.display = 'block';
+    return;
+  }
+  const btn = document.getElementById('uploadBtn');
+  btn.disabled = true;
+  btn.textContent = 'جارِ الإرسال...';
+  try{
+    await updateDoc(doc(db, "students", currentDocId), {
+      receipt: receiptData,
+      receiptAt: new Date().toISOString()
+    });
+    document.getElementById('receiptBox').style.display = 'none';
+    document.getElementById('receiptDone').style.display = 'block';
+  }catch(ex){
+    console.error(ex);
+    err.textContent = 'تعذر إرسال الصورة، حاولي مرة أخرى';
+    err.style.display = 'block';
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'إرسال صورة التحويل';
+  }
+}
+
 function resetForm(){
   document.getElementById('f_name').value='';
   document.getElementById('f_pid').value='';
   document.getElementById('f_phone').value='';
   document.querySelectorAll('.halaqa-chip').forEach(c=>c.classList.remove('active'));
   selectedHalaqa = null;
+  currentDocId = null;
+  receiptData = null;
+  document.getElementById('receiptFile').value = '';
+  document.getElementById('receiptPreview').style.display = 'none';
+  document.getElementById('uploadBtn').style.display = 'none';
+  document.getElementById('pickBtn').textContent = 'اختيار صورة التحويل';
+  document.getElementById('receiptErr').style.display = 'none';
+  document.getElementById('receiptBox').style.display = 'block';
+  document.getElementById('receiptDone').style.display = 'none';
   document.getElementById('successView').classList.remove('show');
   document.getElementById('formView').style.display = 'block';
 }
 
 window.submitForm = submitForm;
 window.resetForm = resetForm;
+window.uploadReceipt = uploadReceipt;
 </script>
 
 </body>
